@@ -5,7 +5,7 @@ export const addProduct = async(req,res)=>{
     if(req.session.admin){
         try{
  
-    let proImage = " ";
+    let proImage = "";
    if(req.file){
     proImage = req.file.filename;
    }

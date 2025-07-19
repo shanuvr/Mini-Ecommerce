@@ -35,3 +35,15 @@ export const addProduct = async(req,res)=>{
    
 
 }
+
+export const showProducts = async(req,res)=>{
+    try{
+        const products = await productModel.find()
+        res.json({products})
+
+    }catch(err){
+        console.log(err);
+        res.json({message:err})
+        
+    }
+}

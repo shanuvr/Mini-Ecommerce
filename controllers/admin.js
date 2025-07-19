@@ -1,5 +1,6 @@
 import mongoose from "mongoose"
 import bcrypt from "bcrypt"
+import userModel from "../models/users.js";
 
 export const adminLogin = async(req,res)=>{
     console.log(req.body);
@@ -32,3 +33,17 @@ export const adminLogout = (req, res) => {
         return res.json({ message: "Session destroyed successfully" })
     })
 }
+
+export const showUsers = async(req,res)=>{
+    try{
+        const users = await userModel.find()
+        res.json(users)
+
+    }catch(Err){
+        console.log(Err);
+        res.json({message:"somthing wrong"})
+        
+    }
+
+}
+

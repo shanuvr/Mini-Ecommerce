@@ -30,7 +30,7 @@ export const adminLogout = (req, res) => {
         if (err) {
             return res.status(500).json({ message: "Failed to destroy session", })
         }
-        return res.json({ message: "Session destroyed successfully" })
+        return res.json({ message: "Session destroyed " })
     })
 }
 

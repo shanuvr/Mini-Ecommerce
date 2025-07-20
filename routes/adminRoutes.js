@@ -4,8 +4,9 @@ import path from 'path'
 import { adminLogin } from '../controllers/admin.js'
 import { adminLogout } from '../controllers/admin.js'
 import { showUsers } from '../controllers/admin.js'
-import { showProducts } from '../controllers/productController.js'
+import { adminShowProducts } from '../controllers/productController.js'
 import { addProduct } from '../controllers/productController.js'
+import { adminEditProduct } from '../controllers/productController.js'
 const adminRoute = express.Router()
  const storage = multer.diskStorage({
         destination:function(req,file,cb){
@@ -25,5 +26,7 @@ adminRoute.get('/login',adminLogin)
 adminRoute.post('/products',productUpload.single("productImage"),addProduct)
 adminRoute.get('/logout',adminLogout)
 adminRoute.get('/users',showUsers)
-adminRoute.get('/products',showProducts)
+adminRoute.get('/products',adminShowProducts)
+adminRoute.put('/product/:id',productUpload.single("productImage"),adminEditProduct)
+
 export default adminRoute

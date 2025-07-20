@@ -3,6 +3,9 @@ import path from 'path'
 import { register } from '../controllers/usersController.js'
 import { editUser } from '../controllers/usersController.js'
 import { loginUser } from '../controllers/usersController.js'
+import { userShowProducts } from '../controllers/productController.js'
+import { userShowDetailedProduct } from '../controllers/productController.js'
+
 import express from 'express'
 const userRoute = express.Router()
 
@@ -20,4 +23,6 @@ const upload = multer({storage:storage})
 userRoute.post('/register',upload.single("profilePicture"),register)
 userRoute.post('/edit/:id',upload.single("profilePicture"),editUser)
 userRoute.get('/login',loginUser)
+userRoute.get('/products',userShowProducts)
+userRoute.get('/products/:id',userShowDetailedProduct)
 export default userRoute

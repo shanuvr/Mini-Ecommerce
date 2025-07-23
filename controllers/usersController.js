@@ -84,8 +84,8 @@ export const editUser = async (req, res) => {
  }
 
  export const logoutUser = (req,res)=>{
-  req.session.desstroy((err)=>{
-    if(er){
+  req.session.destroy((err)=>{
+    if(err){
       console.log('failed to destroy session');
       
     }

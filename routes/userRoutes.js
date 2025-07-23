@@ -7,6 +7,7 @@ import { logoutUser } from '../controllers/usersController.js'
 import { userShowProducts } from '../controllers/productController.js'
 import { userShowDetailedProduct } from '../controllers/productController.js'
 import { userShowCategory } from '../controllers/categoryController.js'
+import { addTocart } from '../controllers/cartController.js'
 
 import express from 'express'
 const userRoute = express.Router()
@@ -36,6 +37,7 @@ userRoute.use((req,res,next)=>{
 })
 userRoute.post('/edit/:id',upload.single("profilePicture"),editUser)
 userRoute.get('/logout',logoutUser)
+userRoute.post('/cart',addTocart)
 
 
 export default userRoute

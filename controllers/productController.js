@@ -41,7 +41,7 @@ export const adminShowProducts = async (req, res) => {
       res.json({ products });
     } catch (err) {
       console.log(err);
-      res.json({ message: err });
+      res.status(404).json({ message: err });
     }
   } else {
     res.status(401).json({ message: "admin not logged in" });
@@ -111,3 +111,8 @@ export const adminEditProduct = async (req, res) => {
     res.json({message:"admin not logged in"})
   }
 };
+
+export const adminShowCategories = async(req,res)=>{
+  
+   
+}

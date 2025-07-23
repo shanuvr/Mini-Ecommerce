@@ -9,7 +9,7 @@ const produtSchema = new mongoose.Schema({
         required:true
     },
      productCategory:{
-        type:String,
+        type:mongoose.Schema.Types.ObjectId,
         required:true
     },
      productPrice:{

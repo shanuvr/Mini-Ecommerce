@@ -7,6 +7,7 @@ import userRoute  from "./routes/userRoutes.js";
 import adminRoute from "./routes/adminRoutes.js";
 dotenv.config()
 const app = express()
+app.use(express.urlencoded({extended:true}))
 app.use(express.static("uploads"))
 app.use(express.static("productImages"))
  app.use(express.json())

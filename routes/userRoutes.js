@@ -3,8 +3,10 @@ import path from 'path'
 import { register } from '../controllers/usersController.js'
 import { editUser } from '../controllers/usersController.js'
 import { loginUser } from '../controllers/usersController.js'
+import { logoutUser } from '../controllers/usersController.js'
 import { userShowProducts } from '../controllers/productController.js'
 import { userShowDetailedProduct } from '../controllers/productController.js'
+import { userShowCategory } from '../controllers/categoryController.js'
 
 import express from 'express'
 const userRoute = express.Router()
@@ -20,9 +22,20 @@ const storage = multer.diskStorage({
 })
 
 const upload = multer({storage:storage})
-userRoute.post('/register',upload.single("profilePicture"),register)
-userRoute.post('/edit/:id',upload.single("profilePicture"),editUser)
 userRoute.get('/login',loginUser)
+userRoute.post('/register',upload.single("profilePicture"),register)
 userRoute.get('/products',userShowProducts)
 userRoute.get('/products/:id',userShowDetailedProduct)
+userRoute.get('/categories',userShowCategory)
+userRoute.use((req,res,next)=>{
+    if(req.session.user){
+        next()
+    }else{
+        res.status(401).json({message:"user not logged in"})
+    }
+})
+userRoute.post('/edit/:id',upload.single("profilePicture"),editUser)
+userRoute.get('/logout',logoutUser)
+
+
 export default userRoute

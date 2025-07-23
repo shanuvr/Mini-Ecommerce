@@ -18,7 +18,8 @@ export const adminLogin = async(req,res)=>{
 
     if(ismatched){
         req.session.admin = {
-            email:adminFound.email
+            Id:adminFound._id,
+            email: adminFound.email
         }
     }
     res.json({message:req.session.admin})

@@ -35,7 +35,7 @@ userRoute.use((req,res,next)=>{
         res.status(401).json({message:"user not logged in"})
     }
 })
-userRoute.post('/edit/:id',upload.single("profilePicture"),editUser)
+userRoute.put('/edit/:id',upload.single("profilePicture"),editUser)
 userRoute.get('/logout',logoutUser)
 userRoute.post('/cart',addTocart)
 

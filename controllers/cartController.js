@@ -128,7 +128,7 @@ export const editCart = async(req,res)=>{
             const existCart = await cartModel.findOne({userId})
             if(existCart){
                 const findIndex = existCart.items.findIndex((it)=>{
-                    return it.productId.toString()==productId
+                    return it.productId==productId
                 })
                 if(findIndex!==-1){
                    console.log(quantityFromBody);
@@ -140,9 +140,34 @@ export const editCart = async(req,res)=>{
                 res.json({message:"id with that product soes not exist so how can you edit it "})
             }       
     }catch(err){
-
+        return res.json({err})
     }
 
+}
+
+export const deleteCartItem = async(req,res) =>{
+    
+    try{
+        const {id} = req.session.user
+        const userId = id
+        const productId = req.params.id
+        const isCart = await cartModel.findOne({userId})
+        if(isCart){
+            const findIndex = isCart.items.findIndex((it)=>{
+                return it.productId==productId
+            })
+
+            const del = isCart.items.splice(findIndex,1)
+            await isCart.save()
+            return res.json({messaage:"deleted",deleted:del})
+            
+
+        }else{
+            return res.json({message:"no cart found for this person"})
+        }
+    }catch(err){
+        return res.json({err})
+    }
 }
 
 

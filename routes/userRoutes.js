@@ -10,6 +10,7 @@ import { userShowCategory } from '../controllers/categoryController.js'
 import { addTocart } from '../controllers/cartController.js'
 import { showTotalAmount } from '../controllers/cartController.js'
 import { editCart } from '../controllers/cartController.js'
+import { deleteCartItem } from '../controllers/cartController.js'
 
 import express from 'express'
 const userRoute = express.Router()
@@ -42,6 +43,7 @@ userRoute.get('/logout',logoutUser)
 userRoute.post('/cart',addTocart)
 userRoute.get('/cart',showTotalAmount)
 userRoute.put('/cart/:id',editCart)
+userRoute.delete('/cart/:id',deleteCartItem)
 
 
 

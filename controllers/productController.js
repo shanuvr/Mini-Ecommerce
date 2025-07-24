@@ -1,3 +1,4 @@
+import categoryModel from "../models/category.js";
 import productModel from "../models/products.js";
 
 export const addProduct = async (req, res) => {
@@ -111,8 +112,29 @@ export const adminEditProduct = async (req, res) => {
     res.json({message:"admin not logged in"})
   }
 };
+export const adminDeleteProduct = async(req,res)=>{
+ try{
+   const productID = req.params.id
+   const del = await productModel.findByIdAndDelete(productID)
+   return res.json({message:"product deleteed"})
 
-export const adminShowCategories = async(req,res)=>{
+ }catch(err){
+  return res.json({err})
   
+ }
+
+}
+export const adminShowCategories = async(req,res)=>{
+  try{
+    const categories = await categoryModel.find()
+    if(categories){
+      return res.json({categories})
+    }else{
+      return res.json({message:"category is empty"})
+    }
+
+  }catch(err){
+    return res.json({err})
+  }
    
 }

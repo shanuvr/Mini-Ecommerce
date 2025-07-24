@@ -41,42 +41,10 @@ export const addTocart = async (req, res) => {
 };
 
 export const showTotalAmount = async (req, res) => {
-  const { id } = req.session.user;
+  try{
+    const { id } = req.session.user;
   const userId = new mongoose.Types.ObjectId(id);
-  // const userCart =  await cartModel.find({userId})
-  //    return res.json({userCart})
-
-//   const userCart = await cartModel.aggregate([
-//     {
-//       $match: {
-//         userId: userId,
-//       },
-//     },
-//     {
-//       $unwind: "$items",
-//     },
-//     {
-//         $lookup:{
-//             from:"products",
-//             localField:"items.productId",
-//             foreignField:"_id",
-//             as:"productDetails"
-//         }
-//     },
-//     {
-//         $unwind:"$productDetails"
-//     },
-//     {
-//         $addFields:{
-//             subtotal:{
-//                 $multiply:["$productDetails.productPrice","$items.quantity"]
-//             }
-//         }
-//     },
-    
-//   ]);
-
-
+ 
 const facet = await cartModel.aggregate([{
     $facet:{
         total:[
@@ -143,8 +111,39 @@ const facet = await cartModel.aggregate([{
     }
 }])
   return res.json({ facet });
+
+  }catch(err){
+    return res.json({err})
+  }
 };
 
+
+export const editCart = async(req,res)=>{
+    const {id} = req.session.user
+    const userId = id;
+    const {quantity} = req.body
+    const quantityFromBody = quantity
+    const productId = req.params.id
+    try{
+            const existCart = await cartModel.findOne({userId})
+            if(existCart){
+                const findIndex = existCart.items.findIndex((it)=>{
+                    return it.productId.toString()==productId
+                })
+                if(findIndex!==-1){
+                   console.log(quantityFromBody);
+                        existCart.items[findIndex].quantity = quantityFromBody;
+                        await existCart.save()
+                        return res.json({message:"product quandity updated"})
+                }   
+            }else{
+                res.json({message:"id with that product soes not exist so how can you edit it "})
+            }       
+    }catch(err){
+
+    }
+
+}
 
 
 

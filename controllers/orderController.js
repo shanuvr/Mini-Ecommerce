@@ -38,3 +38,28 @@ export const createOrder = async(req,res)=>{
 
      
 }
+
+export const editOrder = async(req,res)=>{
+   try{
+     const id = req.params.id
+    const {deliveryStatus} = req.body
+    const findOrder = await orderModel.findById(id)
+    findOrder.deliveryStatus = deliveryStatus
+    await findOrder.save()
+    return res.json({message:"delevery status Updated"})
+   }catch(err){
+    return res.json({err})
+   }
+}
+
+export const deleteOrder = async(req,res)=>{
+    try{
+         const id = req.params.id
+         const del = await orderModel.findByIdAndDelete(id)
+         res.json({message:"order Deleted Successfully"})
+         
+    }catch(err){
+        res.json({err})
+    }
+
+}

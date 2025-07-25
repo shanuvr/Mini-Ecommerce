@@ -20,8 +20,10 @@ app.use(express.static("productImages"))
         collectionName:"session"
     })
  }))
+
  app.use("/admin",adminRoute)
  app.use("/",userRoute)
+ 
 
 
 mongoose.connect(process.env.dbURL).then(()=>{

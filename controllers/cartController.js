@@ -4,7 +4,8 @@ import productModel from "../models/products.js";
 import mongoose from "mongoose";
 
 export const addTocart = async (req, res) => {
-  const { productId, quantity } = req.body;
+    const productId = req.params.id
+  const {quantity } = req.body;
   const { id } = req.session.user;
   const userId = id;
   const productIdFromReqBody = productId;

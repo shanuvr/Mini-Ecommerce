@@ -29,7 +29,7 @@ const adminRoute = express.Router()
 const productUpload = multer({storage:storage})
 
 
-adminRoute.get('/login',adminLogin)
+adminRoute.post('/login',adminLogin)
 
 adminRoute.use((req,res,next)=>{
     if(req.session.admin){
@@ -50,4 +50,5 @@ adminRoute.put('/categories/:id',updateCategory)
 adminRoute.delete('/categories/:id',deleteCategory)
 adminRoute.get('/categories',showCategories)
 adminRoute.get('/logout',adminLogout)
+
 export default adminRoute

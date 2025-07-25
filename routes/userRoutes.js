@@ -11,6 +11,8 @@ import { addTocart } from '../controllers/cartController.js'
 import { showTotalAmount } from '../controllers/cartController.js'
 import { editCart } from '../controllers/cartController.js'
 import { deleteCartItem } from '../controllers/cartController.js'
+import { createOrder } from '../controllers/orderController.js'
+import { check } from '../middlewares/middle.js'
 
 import express from 'express'
 const userRoute = express.Router()
@@ -26,7 +28,7 @@ const storage = multer.diskStorage({
 })
 
 const upload = multer({storage:storage})
-userRoute.get('/login',loginUser)
+userRoute.post('/login',check,loginUser)
 userRoute.post('/register',upload.single("profilePicture"),register)
 userRoute.get('/products',userShowProducts)
 userRoute.get('/products/:id',userShowDetailedProduct)
@@ -40,10 +42,12 @@ userRoute.use((req,res,next)=>{
 })
 userRoute.put('/edit/:id',upload.single("profilePicture"),editUser)
 userRoute.get('/logout',logoutUser)
-userRoute.post('/cart',addTocart)
+userRoute.post('/cart/:id',addTocart)
 userRoute.get('/cart',showTotalAmount)
 userRoute.put('/cart/:id',editCart)
 userRoute.delete('/cart/:id',deleteCartItem)
+userRoute.post('/order',createOrder)
+
 
 
 

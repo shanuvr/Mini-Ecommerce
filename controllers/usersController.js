@@ -83,13 +83,12 @@ export const editUser = async (req, res) => {
  }
 
  export const logoutUser = (req,res)=>{
-  req.session.destroy((err)=>{
-    if(err){
-      console.log('failed to destroy session');
-      
-    }
-    res.json({message:"session destroyed"})
-  })
+  req.session.user=null;
+  if(req.session.user==null){
+    return res.json({message:"user logged out "})
+  }else{
+    return res.json({message:"failed to logout"})
+  }
  }
 
  

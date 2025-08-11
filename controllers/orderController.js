@@ -38,3 +38,30 @@ export const createOrder = async(req,res)=>{
 
      
 }
+
+export const editOrder = async (req, res) => {
+        const id = req.params.id;
+    const { deliveryStatus } = req.body;
+
+    try {
+        const data = await orderModel.findByIdAndUpdate(
+            id,
+            { deliveryStatus },
+          
+        );
+
+        if (!data) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+
+        return res.status(200).json({
+            message: "Delivery status updated successfully",
+            data
+        });
+
+    } catch (err) {
+        console.error("Error updating order:", err);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+

@@ -32,6 +32,8 @@ const adminRoute = express.Router()
 const productUpload = multer({storage:storage})
 
 
+
+
 adminRoute.post('/login',adminLogin)
 
 adminRoute.use((req,res,next)=>{
@@ -47,7 +49,7 @@ adminRoute.put('/product/:id',productUpload.single("productImage"),adminEditProd
 adminRoute.delete('/products/:id',adminDeleteProduct)
 adminRoute.get('/users',showUsers)
 adminRoute.get('/products',adminShowProducts)
-adminRoute.get('/products/categories',adminShowCategories)
+adminRoute.get('/categories',adminShowCategories)
 adminRoute.post('/categories',addCategory)
 adminRoute.put('/categories/:id',updateCategory)
 adminRoute.delete('/categories/:id',deleteCategory)

@@ -5,7 +5,7 @@ import orderModel from "../models/orders.js";
 
 
 export const createOrder = async(req,res)=>{
-    console.log(req.session.user);
+   console.log(req.session.user);
     const userId = req.session.user.id
     const findCart = await cartModel.findOne({userId})
     if(!findCart){ return res.json({message:"cart is empty"})}
@@ -14,6 +14,7 @@ export const createOrder = async(req,res)=>{
         let  subtotal=0;
         let  items = [];
         for(let eachItems of findCart.items){
+             console.log("Processing cart item:", eachItems);
             const product = await productModel.findById(eachItems.productId)
             if(!product){continue}
             subtotal = product.productPrice * eachItems.quantity
@@ -26,6 +27,7 @@ export const createOrder = async(req,res)=>{
                 subtotal
             })
         }
+        console.log("Final order items array:", items);
          await orderModel.create({
                 userId,
                 items,
@@ -36,7 +38,6 @@ export const createOrder = async(req,res)=>{
         return res.json({message:"order placed"})
     
 
-     
 }
 
 export const editOrder = async(req,res)=>{

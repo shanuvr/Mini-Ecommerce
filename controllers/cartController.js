@@ -4,17 +4,20 @@ import productModel from "../models/products.js";
 import mongoose from "mongoose";
 
 export const addTocart = async (req, res) => {
-    const productId = req.params.id
-  const {quantity } = req.body;
+  const productId = req.params.id
+  let {quantity } = req.body;
+  let temp = quantity;
+  quantity = Number(temp)
   const { id } = req.session.user;
   const userId = id;
   const productIdFromReqBody = productId;
   try {
     let cartExist = await cartModel.findOne({ userId });
+    
 
     if (cartExist) {
-      const indexOfExitsProduct = await cartExist.items.findIndex((item) => {
-        return item.productId == productIdFromReqBody;
+      const indexOfExitsProduct =  cartExist.items.findIndex((item) => {
+        return item.productId.toString() == productIdFromReqBody;
       });
       console.log(indexOfExitsProduct);
       if (indexOfExitsProduct !== -1) {
@@ -39,6 +42,7 @@ export const addTocart = async (req, res) => {
   } catch (err) {
     res.json({ err });
   }
+   
 };
 
 export const showTotalAmount = async (req, res) => {
@@ -152,7 +156,16 @@ export const deleteCartItem = async(req,res) =>{
         const {id} = req.session.user
         const userId = id
         const productId = req.params.id
+      
         const isCart = await cartModel.findOne({userId})
+        
+        const findIndex = isCart.items.findIndex((item) =>
+      item.productId == productId
+    );
+
+    if (findIndex === -1) {
+      return res.json({ message: "Product not found in cart" });
+    }
         if(isCart){
             const findIndex = isCart.items.findIndex((it)=>{
                 return it.productId==productId

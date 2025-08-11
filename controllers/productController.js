@@ -36,17 +36,38 @@ export const addProduct = async (req, res) => {
 };
 
 export const adminShowProducts = async (req, res) => {
-  if (req.session.admin) {
-    try {
-      const products = await productModel.find();
-      res.json({ products });
-    } catch (err) {
-      console.log(err);
-      res.status(404).json({ message: err });
-    }
-  } else {
-    res.status(401).json({ message: "admin not logged in" });
+  try{
+   const products = await productModel.aggregate([
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'productCategory',
+          foreignField: '_id',
+          as: 'categoryDetails'
+        }
+      },
+      {
+       $unwind:'$categoryDetails'
+      },
+      {
+        $project: {
+          productName: 1,
+          productCategory:1,
+          productPrice: 1,
+          productStock: 1,
+          productImage: 1,
+          productDescription: 1,
+          categoryName: '$categoryDetails.name'
+        }
+      }
+    ]);
+    console.log(products);
+    
+    res.json({ products });
+  }catch(err){
+    return res.json({err})
   }
+   
 };
 
 export const userShowProducts = async (req, res) => {
@@ -80,6 +101,8 @@ export const userShowDetailedProduct = async (req, res) => {
 };
 
 export const adminEditProduct = async (req, res) => {
+  console.log("edite route worked");
+  
   if(req.session.admin){
     try {
     const productId = req.params.id;
@@ -93,12 +116,14 @@ export const adminEditProduct = async (req, res) => {
       productImage:oldProduct.productImage,
       productPrice:oldProduct.productPrice
     };
+   
     if(req.body.productName){dataToSet.productName=req.body.productName}
     if(req.body.productCategory){dataToSet.productCategory = req.body.productCategory}
     if(req.body.productStock){dataToSet.productStock=req.body.productStock}
     if(req.body.productDescription){dataToSet.productDescription=req.body.productDescription}
     if(req.body.productPrice){dataToSet.productPrice=req.body.productPrice}
     if(req.file){dataToSet.productImage=req.file.filename}
+     
 
     const updateProdct = await productModel.findByIdAndUpdate(productId,dataToSet)
     res.json({updateProdct})

@@ -31,7 +31,7 @@ return res.status(200).json({ message: req.session.admin,success:true });
 
 export const adminLogout = (req, res) => {
   req.session.admin = null;
-  if (req.sessio.admin!==null) {
+  if (req.session.admin!==null) {
     return res.status(500).json({ message: "failed to logout" });
   }
   return res.json({ message: "Session destroyed " });

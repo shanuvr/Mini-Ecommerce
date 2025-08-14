@@ -65,3 +65,33 @@ export const editOrder = async (req, res) => {
     }
 };
 
+export const showOrders = async(req,res)=>{
+   try {
+    const orderdata = await orderModel.aggregate([
+  {
+    $lookup: {
+      from: "users",
+      localField: "userId",
+      foreignField: "_id",
+      as: "userDetails"
+    }
+  },
+  { $unwind: "$userDetails" },
+  {
+    $project: {
+      _id: 1,
+      userName: "$userDetails.name",
+      total: 1,
+      deliveryStatus: 1,
+      items: 1,
+      subtotal:1
+    }
+  }
+]);
+
+    res.json({ orderdata });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+

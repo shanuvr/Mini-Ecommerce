@@ -33,6 +33,7 @@ userRoute.post('/register',upload.single("profilePicture"),register)
 userRoute.get('/products',userShowProducts)
 userRoute.get('/products/:id',userShowDetailedProduct)
 userRoute.get('/categories',userShowCategory)
+
 userRoute.use((req,res,next)=>{
     if(req.session.user){
         next()

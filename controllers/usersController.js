@@ -16,7 +16,7 @@ export const register = async (req, res) => {
   });
   await user.save();
 
-  res.json({ message: "User registered successfully" });
+  res.json({ message: "User registered successfully",success:true });
 };
 
 export const editUser = async (req, res) => {

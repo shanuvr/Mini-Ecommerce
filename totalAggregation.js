@@ -186,3 +186,25 @@ const { id: productId } = req.params; // Get productId from route params
 
 
 
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: "users",
+      localField: "userId",
+      foreignField: "_id",
+      as: "userDetails"
+    }
+  },
+  {$unwind:"$items"},
+  { $unwind: "$userDetails" },
+  {
+    $project: {
+      _id: 1,
+      userName: "$userDetails.name",
+      total: 1,
+      deliveryStatus: 1,
+      items: 1
+    }
+  }
+])
+

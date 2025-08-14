@@ -86,9 +86,8 @@ export const userShowProducts = async (req, res) => {
 export const userShowDetailedProduct = async (req, res) => {
   const productId = req.params.id;
   try {
-    let product = await productModel.find(
-      { _id: productId },
-      "productImage productName productPrice productCategogy"
+    let product = await productModel.findById(productId,
+      "productImage productName productPrice productCategogy productDescription"
     );
     if (!product) {
       res.status(404).json({ message: "product not found" });

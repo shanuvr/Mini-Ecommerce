@@ -4,6 +4,13 @@ import productModel from "../models/products.js";
 import mongoose from "mongoose";
 
 export const addTocart = async (req, res) => {
+  console.log("reached add to cart");
+  
+
+    console.log("Params productId:", req.params.id);
+  console.log("Body quantity:", req.body.quantity);
+  console.log("Session user:", req.session.user);
+
   const productId = req.params.id
   let {quantity } = req.body;
   let temp = quantity;
@@ -24,7 +31,7 @@ export const addTocart = async (req, res) => {
         cartExist.items[indexOfExitsProduct].quantity += quantity;
       } else {
         const dataToPush = {
-          productId,
+            productId: new mongoose.Types.ObjectId(productId),
           quantity,
         };
         cartExist.items.push(dataToPush);
@@ -34,7 +41,7 @@ export const addTocart = async (req, res) => {
     } else {
       const dataToInsert = {
         userId,
-        items: [{ productId, quantity }],
+        items: [{ productId: new mongoose.Types.ObjectId(productId), quantity }],
       };
       const newData = await cartModel.create(dataToInsert);
       return res.json({ newData });
@@ -48,74 +55,64 @@ export const addTocart = async (req, res) => {
 export const showTotalAmount = async (req, res) => {
   try{
     const { id } = req.session.user;
-  const userId = new mongoose.Types.ObjectId(id);
- 
-const facet = await cartModel.aggregate([{
-    $facet:{
-        total:[
-             {
-      $match: {
-        userId: userId,
-      },
-    },
-    {
-      $unwind: "$items",
-    },
-    {
-        $lookup:{
-            from:"products",
-            localField:"items.productId",
-            foreignField:"_id",
-            as:"productDetails"
-        }
-    },
-    {
-        $unwind:"$productDetails"
-    },
-    {
-        $addFields:{
-            subtotal:{
-                $multiply:["$productDetails.productPrice","$items.quantity"]
-            }
-        }
-    },{
-        $group:{
-            _id:"",
-               total: { $sum: "$subtotal" }
-            
-        }
-    }
+   
     
-        ],
-        details:[  {
-      $match: {
-        userId: userId,
-      },
+  const userId = new mongoose.Types.ObjectId(id);
+  console.log(userId);
+  
+const cartForDebug = await cartModel.findOne({ userId: userId });
+    console.log("INSPECT THIS CART:", JSON.stringify(cartForDebug, null, 2));
+
+  
+ 
+const cart = await cartModel.aggregate([
+   {
+        $match:{
+            userId:userId
+        }
     },
     {
-      $unwind: "$items",
+        $unwind:"$items"
     },
     {
         $lookup:{
             from:"products",
             localField:"items.productId",
             foreignField:"_id",
-            as:"productDetails"
+            as:"Details"
         }
     },
-    {
-        $unwind:"$productDetails"
+   {
+        $unwind:"$Details"
     },
-    {
+
+     {
         $addFields:{
             subtotal:{
-                $multiply:["$productDetails.productPrice","$items.quantity"]
+                $multiply:["$items.quantity","$Details.productPrice"]
             }
         }
-    },]
+     },
+     {
+       $group: {
+      _id: "$userId",
+      cartitems: {
+        $push: {
+          productId: "$items.productId",
+          quantity: "$items.quantity",
+          name: "$Details.productName",
+          image: "$Details.productImage", 
+          price: "$Details.productPrice",
+          subtotal: "$subtotal"
+        }
+      },
+      total: { $sum: "$subtotal" }
     }
-}])
-  return res.json({ facet });
+     }
+])
+console.log(cart[0]);
+
+  return res.json({ cart });
 
   }catch(err){
     return res.json({err})

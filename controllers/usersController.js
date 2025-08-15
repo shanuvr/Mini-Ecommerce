@@ -77,7 +77,7 @@ export const editUser = async (req, res) => {
             name:userFound.name,
             email:userFound.email,
         }
-        res.status(200).json({message:'login successfull'})
+        res.status(200).json({message:'login successfull',success:true})
     }
 
  }

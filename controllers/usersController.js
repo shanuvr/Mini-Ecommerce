@@ -91,4 +91,11 @@ export const editUser = async (req, res) => {
   }
  }
 
+ export const sessioncheck = (req,res) =>{
+  if(req.session.user){
+    return res.json({loggedin:true,user:req.session.user})
+  }else{
+    return res.json({loggedin:false,user:null})
+  }
+ }
  

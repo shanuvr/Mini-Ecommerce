@@ -13,6 +13,7 @@ import { editCart } from '../controllers/cartController.js'
 import { deleteCartItem } from '../controllers/cartController.js'
 import { createOrder } from '../controllers/orderController.js'
 import { check } from '../middlewares/middle.js'
+import { sessioncheck } from '../controllers/usersController.js'
 
 import express from 'express'
 const userRoute = express.Router()
@@ -48,6 +49,7 @@ userRoute.get('/cart',showTotalAmount)
 userRoute.put('/cart/:id',editCart)
 userRoute.delete('/cart/:id',deleteCartItem)
 userRoute.post('/order',createOrder)
+userRoute.get('/sessioncheck',sessioncheck)
 
 
 

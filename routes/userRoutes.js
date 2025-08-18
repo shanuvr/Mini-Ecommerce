@@ -1,6 +1,6 @@
 import multer from 'multer'
 import path from 'path'
-import { register } from '../controllers/usersController.js'
+import { getUser, register } from '../controllers/usersController.js'
 import { editUser } from '../controllers/usersController.js'
 import { loginUser } from '../controllers/usersController.js'
 import { logoutUser } from '../controllers/usersController.js'
@@ -14,6 +14,8 @@ import { deleteCartItem } from '../controllers/cartController.js'
 import { createOrder } from '../controllers/orderController.js'
 import { check } from '../middlewares/middle.js'
 import { sessioncheck } from '../controllers/usersController.js'
+import { placedOrders } from '../controllers/orderController.js'
+import { search } from '../controllers/productController.js'
 
 import express from 'express'
 const userRoute = express.Router()
@@ -50,7 +52,9 @@ userRoute.put('/cart/:id',editCart)
 userRoute.delete('/cart/:id',deleteCartItem)
 userRoute.post('/order',createOrder)
 userRoute.get('/sessioncheck',sessioncheck)
-
+userRoute.get('/placedorders',placedOrders)
+userRoute.get('/getuser',getUser)
+userRoute.get('/search/:query',search)
 
 
 

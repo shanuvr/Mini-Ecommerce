@@ -95,3 +95,19 @@ export const showOrders = async(req,res)=>{
   }
 }
 
+export const placedOrders = async(req,res)=>{
+  try {
+    const userId = new mongoose.Types.ObjectId(req.session.user.id);
+
+    const orderdata = await orderModel.find({ userId });
+    console.log(orderdata);
+
+    res.json(orderdata);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+  
+  
+}
+

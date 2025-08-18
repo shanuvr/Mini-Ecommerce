@@ -162,3 +162,15 @@ export const adminShowCategories = async(req,res)=>{
   }
    
 }
+
+export const search = async(req,res)=>{
+try {
+        const regex = new RegExp(req.params.query, "i"); 
+        console.log(regex);
+        
+        const products = await productModel.find({ productName: regex });
+        res.json(products);
+    } catch (err) {
+        res.status(500).json({ error: "Search failed" });
+    }
+}

@@ -76,6 +76,7 @@ export const editUser = async (req, res) => {
             id:userFound._id,
             name:userFound.name,
             email:userFound.email,
+            
         }
         res.status(200).json({message:'login successfull',success:true})
     }
@@ -97,5 +98,18 @@ export const editUser = async (req, res) => {
   }else{
     return res.json({loggedin:false,user:null})
   }
+ }
+
+ export const getUser = async(req,res)=>{
+try{
+  const userId = req.session.user.id
+  console.log(userId);
+  const userData = await userModel.findById(userId)
+  res.json({userData})
+ 
+
+}catch(err){
+  res.json({err})
+}
  }
  

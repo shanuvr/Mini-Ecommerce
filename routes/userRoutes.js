@@ -16,6 +16,7 @@ import { check } from '../middlewares/middle.js'
 import { sessioncheck } from '../controllers/usersController.js'
 import { placedOrders } from '../controllers/orderController.js'
 import { search } from '../controllers/productController.js'
+import { filter } from '../controllers/productController.js'
 
 import express from 'express'
 const userRoute = express.Router()
@@ -36,6 +37,7 @@ userRoute.post('/register',upload.single("profilePicture"),register)
 userRoute.get('/products',userShowProducts)
 userRoute.get('/products/:id',userShowDetailedProduct)
 userRoute.get('/categories',userShowCategory)
+userRoute.get('/filter/:id',filter)
 
 userRoute.use((req,res,next)=>{
     if(req.session.user){

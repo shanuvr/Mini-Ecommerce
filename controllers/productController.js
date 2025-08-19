@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import categoryModel from "../models/category.js";
 import productModel from "../models/products.js";
 
@@ -173,4 +174,21 @@ try {
     } catch (err) {
         res.status(500).json({ error: "Search failed" });
     }
+}
+
+export const filter = async(req,res)=>{
+  try{
+    console.log("in filter");
+    const catId = req.params.id;
+    const cat = new mongoose.Types.ObjectId(catId);
+    console.log(cat);
+    
+    
+    const filterd = await productModel.find({productCategory:cat})
+    res.json({filterd})
+
+  }catch(err){
+    console.log(err);
+    
+  }
 }

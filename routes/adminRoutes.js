@@ -15,6 +15,7 @@ import { showCategories } from '../controllers/categoryController.js'
 import { adminDeleteProduct } from '../controllers/productController.js'
 import { editCart } from '../controllers/cartController.js'
 import {  editOrder,showOrders } from '../controllers/orderController.js'
+import { productspercategory } from '../controllers/categoryController.js'
 
 const adminRoute = express.Router()
  const storage = multer.diskStorage({
@@ -57,6 +58,7 @@ adminRoute.get('/categories',showCategories)
 adminRoute.post('/logout',adminLogout)
 adminRoute.put('/order/:id',editOrder)
 adminRoute.get('/orders',showOrders)
+adminRoute.get('/productspercategory',productspercategory)
 // adminRoute.delete('/order/:id',deleteOrder)
 
 export default adminRoute

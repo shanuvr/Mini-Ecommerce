@@ -68,3 +68,36 @@ export const userShowCategory = async(req,res)=>{
 
 
 }
+
+export const productspercategory = async(req,res)=>{
+    try{
+            const data = await productModel.aggregate([
+                {
+                    $group:{
+                        _id:"$productCategory",
+                        total:{$sum:1}
+                    }
+                },{
+                    $lookup:{
+                        from:"categories",
+                        localField:"_id",
+                        foreignField:"_id",
+                        as:"details"
+                    }
+                },
+                {
+                    $unwind:"$details"
+                },{
+                    $project:{
+                        name:"$details.name",
+                        total:"$total"
+                    }
+                }
+            ])
+            res.json({data})
+    }catch(err){
+        console.log(err);
+        
+    }
+
+}

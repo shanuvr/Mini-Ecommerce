@@ -99,7 +99,7 @@ export const placedOrders = async(req,res)=>{
   try {
     const userId = new mongoose.Types.ObjectId(req.session.user.id);
 
-    const orderdata = await orderModel.find({ userId });
+    const orderdata = await orderModel.find({ userId }).sort({createdAt:-1});
     console.log(orderdata);
 
     res.json(orderdata);

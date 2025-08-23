@@ -36,9 +36,16 @@ export const updateCategory = async(req,res)=>{
 export const deleteCategory = async(req,res)=>{
     try{
         const categoryId = req.params.id
-    await productModel.deleteMany({productCategory:categoryId})
-    await categoryModel.deleteOne({_id:categoryId})
-    return res.json({message:"deleted all the category and all the products in that category"})
+    const product = await productModel.findOne({ productCategory: categoryId });
+
+if (product) {
+  return res.status(400).json({
+    success:false,
+    message: "Cannot delete category because at least one product exists in this category",
+  });
+}
+    const del =await categoryModel.deleteOne({ _id: categoryId });
+    return res.json({message:"delted",success: true,})
 
     }catch(err){
         return res.json({err})

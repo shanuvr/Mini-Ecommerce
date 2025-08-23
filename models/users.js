@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { type } from "os";
 
 const userSchema = new mongoose.Schema({
     name:{
@@ -18,6 +19,10 @@ const userSchema = new mongoose.Schema({
     },
     profilePicture:{
         type:String
+    },
+    isActive:{
+        type:Boolean,
+        default:true
     }
 })
 

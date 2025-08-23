@@ -69,7 +69,11 @@ export const editUser = async (req, res) => {
 
     const isPasswordMatched = await bcrypt.compare(password,userFound.password)
 
+    if (!userFound.isActive) {
+     return res.status(403).json({ message: 'You are not a active ' });
+   }
     if(!isPasswordMatched){return res.status(401).json({message:"incorrect password"})}
+    
 
     if(isPasswordMatched){
         req.session.user = {
@@ -111,5 +115,29 @@ try{
 }catch(err){
   res.json({err})
 }
+ }
+
+ export const isActive =async(req,res)=>{
+  try{
+    console.log("reached backend");
+  
+  const userId = req.params.id
+  console.log(userId);
+ const {stat} = req.body
+ console.log(stat);
+ 
+  const toggle = await userModel.findByIdAndUpdate(userId,{isActive:stat})
+  return res.json({
+      message: "User status updated"
+    });
+
+  }catch(err){
+    console.log(err);
+    
+  }
+  
+  
+  
+
  }
  

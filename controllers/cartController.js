@@ -59,11 +59,6 @@ export const showTotalAmount = async (req, res) => {
     
   const userId = new mongoose.Types.ObjectId(id);
   console.log(userId);
-  
-const cartForDebug = await cartModel.findOne({ userId: userId });
-    console.log("INSPECT THIS CART:", JSON.stringify(cartForDebug, null, 2));
-
-  
  
 const cart = await cartModel.aggregate([
    {

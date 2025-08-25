@@ -1,6 +1,6 @@
 import multer from 'multer'
 import path from 'path'
-import { register } from '../controllers/usersController.js'
+import { getUser, register } from '../controllers/usersController.js'
 import { editUser } from '../controllers/usersController.js'
 import { loginUser } from '../controllers/usersController.js'
 import { logoutUser } from '../controllers/usersController.js'
@@ -13,6 +13,10 @@ import { editCart } from '../controllers/cartController.js'
 import { deleteCartItem } from '../controllers/cartController.js'
 import { createOrder } from '../controllers/orderController.js'
 import { check } from '../middlewares/middle.js'
+import { sessioncheck } from '../controllers/usersController.js'
+import { placedOrders } from '../controllers/orderController.js'
+import { search } from '../controllers/productController.js'
+import { filter } from '../controllers/productController.js'
 
 import express from 'express'
 const userRoute = express.Router()
@@ -33,6 +37,8 @@ userRoute.post('/register',upload.single("profilePicture"),register)
 userRoute.get('/products',userShowProducts)
 userRoute.get('/products/:id',userShowDetailedProduct)
 userRoute.get('/categories',userShowCategory)
+userRoute.get('/filter/:id',filter)
+
 userRoute.use((req,res,next)=>{
     if(req.session.user){
         next()
@@ -47,7 +53,10 @@ userRoute.get('/cart',showTotalAmount)
 userRoute.put('/cart/:id',editCart)
 userRoute.delete('/cart/:id',deleteCartItem)
 userRoute.post('/order',createOrder)
-
+userRoute.get('/sessioncheck',sessioncheck)
+userRoute.get('/placedorders',placedOrders)
+userRoute.get('/getuser',getUser)
+userRoute.get('/search/:query',search)
 
 
 

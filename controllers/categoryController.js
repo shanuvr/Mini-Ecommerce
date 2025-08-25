@@ -36,9 +36,16 @@ export const updateCategory = async(req,res)=>{
 export const deleteCategory = async(req,res)=>{
     try{
         const categoryId = req.params.id
-    await productModel.deleteMany({productCategory:categoryId})
-    await categoryModel.deleteOne({_id:categoryId})
-    return res.json({message:"deleted all the category and all the products in that category"})
+    const product = await productModel.findOne({ productCategory: categoryId });
+
+if (product) {
+  return res.status(400).json({
+    success:false,
+    message: "Cannot delete category because at least one product exists in this category",
+  });
+}
+    const del =await categoryModel.deleteOne({ _id: categoryId });
+    return res.json({message:"delted",success: true,})
 
     }catch(err){
         return res.json({err})
@@ -66,5 +73,38 @@ export const userShowCategory = async(req,res)=>{
     res.json({message:err})
    }
 
+
+}
+
+export const productspercategory = async(req,res)=>{
+    try{
+            const data = await productModel.aggregate([
+                {
+                    $group:{
+                        _id:"$productCategory",
+                        total:{$sum:1}
+                    }
+                },{
+                    $lookup:{
+                        from:"categories",
+                        localField:"_id",
+                        foreignField:"_id",
+                        as:"details"
+                    }
+                },
+                {
+                    $unwind:"$details"
+                },{
+                    $project:{
+                        name:"$details.name",
+                        total:"$total"
+                    }
+                }
+            ])
+            res.json({data})
+    }catch(err){
+        console.log(err);
+        
+    }
 
 }

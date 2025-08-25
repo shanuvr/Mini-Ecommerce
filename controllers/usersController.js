@@ -16,7 +16,7 @@ export const register = async (req, res) => {
   });
   await user.save();
 
-  res.json({ message: "User registered successfully" });
+  res.json({ message: "User registered successfully",success:true });
 };
 
 export const editUser = async (req, res) => {
@@ -69,15 +69,20 @@ export const editUser = async (req, res) => {
 
     const isPasswordMatched = await bcrypt.compare(password,userFound.password)
 
+    if (!userFound.isActive) {
+     return res.status(403).json({ message: 'You are not a active ' });
+   }
     if(!isPasswordMatched){return res.status(401).json({message:"incorrect password"})}
+    
 
     if(isPasswordMatched){
         req.session.user = {
             id:userFound._id,
             name:userFound.name,
             email:userFound.email,
+            
         }
-        res.status(200).json({message:'login successfull'})
+        res.status(200).json({message:'login successfull',success:true})
     }
 
  }
@@ -91,4 +96,48 @@ export const editUser = async (req, res) => {
   }
  }
 
+ export const sessioncheck = (req,res) =>{
+  if(req.session.user){
+    return res.json({loggedin:true,user:req.session.user})
+  }else{
+    return res.json({loggedin:false,user:null})
+  }
+ }
+
+ export const getUser = async(req,res)=>{
+try{
+  const userId = req.session.user.id
+  console.log(userId);
+  const userData = await userModel.findById(userId)
+  res.json({userData})
+ 
+
+}catch(err){
+  res.json({err})
+}
+ }
+
+ export const isActive =async(req,res)=>{
+  try{
+    console.log("reached backend");
+  
+  const userId = req.params.id
+  console.log(userId);
+ const {stat} = req.body
+ console.log(stat);
+ 
+  const toggle = await userModel.findByIdAndUpdate(userId,{isActive:stat})
+  return res.json({
+      message: "User status updated"
+    });
+
+  }catch(err){
+    console.log(err);
+    
+  }
+  
+  
+  
+
+ }
  

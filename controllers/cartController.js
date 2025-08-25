@@ -4,24 +4,34 @@ import productModel from "../models/products.js";
 import mongoose from "mongoose";
 
 export const addTocart = async (req, res) => {
-    const productId = req.params.id
-  const {quantity } = req.body;
+  console.log("reached add to cart");
+  
+
+    console.log("Params productId:", req.params.id);
+  console.log("Body quantity:", req.body.quantity);
+  console.log("Session user:", req.session.user);
+
+  const productId = req.params.id
+  let {quantity } = req.body;
+  let temp = quantity;
+  quantity = Number(temp)
   const { id } = req.session.user;
   const userId = id;
   const productIdFromReqBody = productId;
   try {
     let cartExist = await cartModel.findOne({ userId });
+    
 
     if (cartExist) {
-      const indexOfExitsProduct = await cartExist.items.findIndex((item) => {
-        return item.productId == productIdFromReqBody;
+      const indexOfExitsProduct =  cartExist.items.findIndex((item) => {
+        return item.productId.toString() == productIdFromReqBody;
       });
       console.log(indexOfExitsProduct);
       if (indexOfExitsProduct !== -1) {
         cartExist.items[indexOfExitsProduct].quantity += quantity;
       } else {
         const dataToPush = {
-          productId,
+            productId: new mongoose.Types.ObjectId(productId),
           quantity,
         };
         cartExist.items.push(dataToPush);
@@ -31,7 +41,7 @@ export const addTocart = async (req, res) => {
     } else {
       const dataToInsert = {
         userId,
-        items: [{ productId, quantity }],
+        items: [{ productId: new mongoose.Types.ObjectId(productId), quantity }],
       };
       const newData = await cartModel.create(dataToInsert);
       return res.json({ newData });
@@ -39,79 +49,65 @@ export const addTocart = async (req, res) => {
   } catch (err) {
     res.json({ err });
   }
+   
 };
 
 export const showTotalAmount = async (req, res) => {
   try{
     const { id } = req.session.user;
-  const userId = new mongoose.Types.ObjectId(id);
- 
-const facet = await cartModel.aggregate([{
-    $facet:{
-        total:[
-             {
-      $match: {
-        userId: userId,
-      },
-    },
-    {
-      $unwind: "$items",
-    },
-    {
-        $lookup:{
-            from:"products",
-            localField:"items.productId",
-            foreignField:"_id",
-            as:"productDetails"
-        }
-    },
-    {
-        $unwind:"$productDetails"
-    },
-    {
-        $addFields:{
-            subtotal:{
-                $multiply:["$productDetails.productPrice","$items.quantity"]
-            }
-        }
-    },{
-        $group:{
-            _id:"",
-               total: { $sum: "$subtotal" }
-            
-        }
-    }
+   
     
-        ],
-        details:[  {
-      $match: {
-        userId: userId,
-      },
+  const userId = new mongoose.Types.ObjectId(id);
+  console.log(userId);
+ 
+const cart = await cartModel.aggregate([
+   {
+        $match:{
+            userId:userId
+        }
     },
     {
-      $unwind: "$items",
+        $unwind:"$items"
     },
     {
         $lookup:{
             from:"products",
             localField:"items.productId",
             foreignField:"_id",
-            as:"productDetails"
+            as:"Details"
         }
     },
-    {
-        $unwind:"$productDetails"
+   {
+        $unwind:"$Details"
     },
-    {
+
+     {
         $addFields:{
             subtotal:{
-                $multiply:["$productDetails.productPrice","$items.quantity"]
+                $multiply:["$items.quantity","$Details.productPrice"]
             }
         }
-    },]
+     },
+     {
+       $group: {
+      _id: "$userId",
+      cartitems: {
+        $push: {
+          productId: "$items.productId",
+          quantity: "$items.quantity",
+          name: "$Details.productName",
+          image: "$Details.productImage", 
+          price: "$Details.productPrice",
+          subtotal: "$subtotal"
+        }
+      },
+      total: { $sum: "$subtotal" }
     }
-}])
-  return res.json({ facet });
+     }
+])
+console.log(cart[0]);
+
+  return res.json({ cart });
 
   }catch(err){
     return res.json({err})
@@ -152,7 +148,16 @@ export const deleteCartItem = async(req,res) =>{
         const {id} = req.session.user
         const userId = id
         const productId = req.params.id
+      
         const isCart = await cartModel.findOne({userId})
+        
+        const findIndex = isCart.items.findIndex((item) =>
+      item.productId == productId
+    );
+
+    if (findIndex === -1) {
+      return res.json({ message: "Product not found in cart" });
+    }
         if(isCart){
             const findIndex = isCart.items.findIndex((it)=>{
                 return it.productId==productId

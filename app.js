@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import cors from "cors"
 import express, { json } from 'express'
 import MongoStore from "connect-mongo";
 import dotenv from 'dotenv'
@@ -11,6 +12,10 @@ app.use(express.urlencoded({extended:true}))
 app.use(express.static("uploads"))
 app.use(express.static("productImages"))
  app.use(express.json())
+ app.use(cors({
+    origin:"http://localhost:5173",
+    credentials:true
+ }))
   app.use(session({
     secret:"1243",
     resave:false,

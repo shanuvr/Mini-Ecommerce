@@ -13,6 +13,12 @@ import { updateCategory } from '../controllers/categoryController.js'
 import { deleteCategory } from '../controllers/categoryController.js'
 import { showCategories } from '../controllers/categoryController.js'
 import { adminDeleteProduct } from '../controllers/productController.js'
+import { editCart } from '../controllers/cartController.js'
+import {  editOrder,showOrders } from '../controllers/orderController.js'
+import { productspercategory } from '../controllers/categoryController.js'
+import { isActive } from '../controllers/usersController.js'
+
+
 const adminRoute = express.Router()
  const storage = multer.diskStorage({
         destination:function(req,file,cb){
@@ -27,6 +33,8 @@ const adminRoute = express.Router()
     })
 
 const productUpload = multer({storage:storage})
+
+
 
 
 adminRoute.post('/login',adminLogin)
@@ -44,11 +52,16 @@ adminRoute.put('/product/:id',productUpload.single("productImage"),adminEditProd
 adminRoute.delete('/products/:id',adminDeleteProduct)
 adminRoute.get('/users',showUsers)
 adminRoute.get('/products',adminShowProducts)
-adminRoute.get('/products/categories',adminShowCategories)
+adminRoute.get('/categories',adminShowCategories)
 adminRoute.post('/categories',addCategory)
 adminRoute.put('/categories/:id',updateCategory)
 adminRoute.delete('/categories/:id',deleteCategory)
 adminRoute.get('/categories',showCategories)
-adminRoute.get('/logout',adminLogout)
+adminRoute.post('/logout',adminLogout)
+adminRoute.put('/order/:id',editOrder)
+adminRoute.get('/orders',showOrders)
+adminRoute.get('/productspercategory',productspercategory)
+adminRoute.put('/user/:id',isActive)
+// adminRoute.delete('/order/:id',deleteOrder)
 
 export default adminRoute

@@ -9,8 +9,8 @@ import adminRoute from "./routes/adminRoutes.js";
 dotenv.config()
 const app = express()
 app.use(express.urlencoded({extended:true}))
-app.use("/api/uploads", express.static("uploads"))
-app.use("/api/productImages", express.static("productImages"))
+app.use("/uploads", express.static("uploads"))
+app.use("/productImages", express.static("productImages"))
  app.use(express.json())
  app.use(cors({
     origin: [
